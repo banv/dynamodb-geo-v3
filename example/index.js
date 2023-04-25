@@ -1,39 +1,14 @@
 const {
-  GeoDataManager,
-  GeoDataManagerConfiguration,
   GeoTableUtil,
 } = require("dynamodb-geo-v3");
 const {
-  DynamoDB,
-  DynamoDBClient,
-  Endpoint,
   waitUntilTableExists,
 } = require("@aws-sdk/client-dynamodb");
 const uuid = require("uuid");
 
-// Use a local DB for the example.
-const ddb = new DynamoDB({
-  credentials: {
-    accessKeyId: YOUR_AWS_KEY_ID,
-    secretAccessKey: YOUR_AWS_SECRET_ACCESS_KEY,
-  },
-  endpoint: new Endpoint("http://localhost:8000"),
-  region: YOUR_AWS_REGION,
-});
-const ddbClient = new DynamoDBClient({
-  credentials: {
-    accessKeyId: YOUR_AWS_KEY_ID,
-    secretAccessKey: YOUR_AWS_SECRET_ACCESS_KEY,
-  },
-  endpoint: new Endpoint("http://localhost:8000"),
-  region: YOUR_AWS_REGION,
-});
+const {config, geoDataManager} = require("./libs/config.js");
 
-// Configuration for a new instance of a GeoDataManager. Each GeoDataManager instance represents a table
-const config = new GeoDataManagerConfiguration(ddb, "capitals");
-
-// Instantiate the table manager
-const capitalsManager = new GeoDataManager(config);
+const {ddb, ddbClient} = require("./libs/ddbClient.js");
 
 // Use GeoTableUtil to help construct a CreateTableInput.
 const createTableInput = GeoTableUtil.getCreateTableRequest(config);
@@ -71,12 +46,13 @@ ddb
             capital: { S: capital.capital },
           },
         },
+        CompositeValues: ['user1']
       };
     });
 
     const BATCH_SIZE = 25;
     const WAIT_BETWEEN_BATCHES_MS = 1000;
-    var currentBatch = 1;
+    let currentBatch = 1;
 
     function resumeWriting() {
       if (putPointInputs.length === 0) {
@@ -84,7 +60,7 @@ ddb
       }
       const thisBatch = [];
       for (
-        var i = 0, itemToAdd = null;
+        let i = 0, itemToAdd = null;
         i < BATCH_SIZE && (itemToAdd = putPointInputs.shift());
         i++
       ) {
@@ -96,7 +72,7 @@ ddb
           "/" +
           Math.ceil(data.length / BATCH_SIZE)
       );
-      return capitalsManager
+      return geoDataManager
         .batchWritePoints(thisBatch)
         .then(function () {
           return new Promise(function (resolve) {
@@ -115,12 +91,13 @@ ddb
   // Perform a radius query
   .then(function () {
     console.log("Querying by radius, looking 100km from Cambridge, UK.");
-    return capitalsManager.queryRadius({
+    return geoDataManager.queryRadius({
       RadiusInMeter: 100000,
       CenterPoint: {
         latitude: 52.22573,
         longitude: 0.149593,
       },
+      CompositeValues: ['user1']
     });
   })
   // Print the results, an array of DynamoDB.AttributeMaps
