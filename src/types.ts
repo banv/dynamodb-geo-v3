@@ -19,6 +19,8 @@ export interface DeletePointInput {
   RangeKeyValue: AttributeValue;
   GeoPoint: GeoPoint;
   DeleteItemInput?: DeleteItemInput;
+
+  CompositeValues: string[];
 }
 export interface DeletePointOutput extends DeleteItemOutput {}
 
@@ -28,6 +30,7 @@ export interface GeoPoint {
 }
 export interface GeoQueryInput {
   QueryInput?: QueryInput;
+  CompositeValues?: string[];
 }
 export interface GeoQueryOutput extends QueryOutput {}
 export interface GetPointInput {
@@ -40,6 +43,8 @@ export interface PutPointInput {
   RangeKeyValue: AttributeValue;
   GeoPoint: GeoPoint;
   PutItemInput: PutRequest;
+
+  CompositeValues: string[];
 }
 export interface PutPointOutput extends PutItemOutput {}
 export interface QueryRadiusInput extends GeoQueryInput {
@@ -56,6 +61,8 @@ export interface UpdatePointInput {
   RangeKeyValue: AttributeValue;
   GeoPoint: GeoPoint;
   UpdateItemInput: UpdateItemInput;
+
+  CompositeValues: string[];
 }
 export interface UpdatePointOutput extends UpdateItemOutput {}
 

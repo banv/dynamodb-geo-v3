@@ -50,13 +50,15 @@ export class DynamoDBManager {
    *
    * @param range
    *            The range of geohashs to query.
-   *
+   * @param compositeValues
+   *            Composite values to query.
    * @return The query result.
    */
   public async queryGeohash(
     queryInput: QueryInput | undefined,
     hashKey: Long,
-    range: GeohashRange
+    range: GeohashRange,
+    compositeValues: string[] | undefined,
   ) {
     const queryOutputs: QueryOutput[] = [];
 
@@ -65,7 +67,7 @@ export class DynamoDBManager {
 
       keyConditions[this.config.hashKeyAttributeName] = {
         ComparisonOperator: "EQ",
-        AttributeValueList: [{ N: hashKey.toString(10) }],
+        AttributeValueList: [{ S: this.getCompositeHashKey(hashKey, compositeValues)}],
       };
 
       const minRange: AttributeValue = { N: range.rangeMin.toString(10) };
@@ -130,7 +132,7 @@ export class DynamoDBManager {
     };
 
     putItemInput.Item[this.config.hashKeyAttributeName] = {
-      N: hashKey.toString(10),
+      S: this.getCompositeHashKey(hashKey, putPointInput.CompositeValues),
     };
     putItemInput.Item[this.config.rangeKeyAttributeName] =
       putPointInput.RangeKeyValue;
@@ -164,7 +166,7 @@ export class DynamoDBManager {
       };
 
       putRequest.Item[this.config.hashKeyAttributeName] = {
-        N: hashKey.toString(10),
+        S: this.getCompositeHashKey(hashKey, putPointInput.CompositeValues),
       };
       putRequest.Item[this.config.rangeKeyAttributeName] =
         putPointInput.RangeKeyValue;
@@ -210,7 +212,7 @@ export class DynamoDBManager {
     }
 
     updatePointInput.UpdateItemInput.Key[this.config.hashKeyAttributeName] = {
-      N: hashKey.toString(10),
+      S: this.getCompositeHashKey(hashKey, updatePointInput.CompositeValues),
     };
     updatePointInput.UpdateItemInput.Key[this.config.rangeKeyAttributeName] =
       updatePointInput.RangeKeyValue;
@@ -241,9 +243,20 @@ export class DynamoDBManager {
       ...deletePointInput.DeleteItemInput,
       TableName: this.config.tableName,
       Key: {
-        [this.config.hashKeyAttributeName]: { N: hashKey.toString(10) },
+        [this.config.hashKeyAttributeName]: { S: this.getCompositeHashKey(hashKey, deletePointInput.CompositeValues) },
         [this.config.rangeKeyAttributeName]: deletePointInput.RangeKeyValue,
       },
     });
+  }
+
+  protected getCompositeHashKey(hashKey: Long, compositeValues: string[]): string {
+    let compositeHashKey = hashKey.toString(10);
+    if (!compositeValues || compositeValues.length === 0) {
+      return compositeHashKey;
+    }
+    for(const compositeValue of compositeValues) {
+      compositeHashKey += "_" + compositeValue;
+    }
+    return compositeHashKey;
   }
 }

@@ -30,6 +30,7 @@ describe("DynamoDBManager.deletePoint", () => {
         longitude: 50,
         latitude: 1,
       },
+      CompositeValues: ['user1']
     });
 
     expect(called).to.be.true;
@@ -48,7 +49,7 @@ describe("DynamoDBManager.putPoint", () => {
             Item: {
               geoJson: { S: '{"type":"Point","coordinates":[-0.13,51.51]}' },
               geohash: { N: "5221366118452580119" },
-              hashKey: { N: "52" },
+              hashKey: { S: "52_user1" },
               rangeKey: { S: "1234" },
               country: { S: "UK" },
               capital: { S: "London" },
@@ -63,6 +64,7 @@ describe("DynamoDBManager.putPoint", () => {
     const ddb: any = new DynamoDBManager(config);
 
     ddb.putPoint({
+      CompositeValues: ['user1'],
       RangeKeyValue: { S: "1234" }, // Use this to ensure uniqueness of the hash/range pairs.
       GeoPoint: {
         // An object specifying latitutde and longitude as plain numbers. Used to build the geohash, the hashkey and geojson data

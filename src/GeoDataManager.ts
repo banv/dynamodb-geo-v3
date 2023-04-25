@@ -319,7 +319,8 @@ export class GeoDataManager {
         return this.dynamoDBManager.queryGeohash(
           geoQueryInput.QueryInput,
           hashKey,
-          range
+          range,
+          geoQueryInput.CompositeValues,
         );
       });
 

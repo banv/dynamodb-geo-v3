@@ -13,7 +13,7 @@ type Capital = {
   longitude: number;
 };
 
-describe("Example", function () {
+describe("CompositeHashKey", function () {
   // Use a local DB for the example.
   const ddb = new DynamoDB({
     credentials: {
@@ -68,6 +68,7 @@ describe("Example", function () {
           capital: { S: capital.capital },
         },
       },
+      CompositeValues: ['user1']
     }));
 
     const BATCH_SIZE = 25;
@@ -112,14 +113,17 @@ describe("Example", function () {
         latitude: 52.22573,
         longitude: 0.149593,
       },
+      CompositeValues: ['user1']
     });
+
+    console.log("query result", result);
 
     expect(result).to.deep.equal([
       {
         rangeKey: { S: "50" },
         country: { S: "United Kingdom" },
         capital: { S: "London" },
-        hashKey: { S: "522" },
+        hashKey: { S: "522_user1" },
         geoJson: { S: '{"type":"Point","coordinates":[-0.13,51.51]}' },
         geohash: { N: "5221366118452580119" },
       },

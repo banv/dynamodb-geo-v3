@@ -57,7 +57,7 @@ export class GeoTableUtil {
         },
       ],
       AttributeDefinitions: [
-        { AttributeName: config.hashKeyAttributeName, AttributeType: "N" },
+        { AttributeName: config.hashKeyAttributeName, AttributeType: "S" },
         { AttributeName: config.rangeKeyAttributeName, AttributeType: "S" },
         { AttributeName: config.geohashAttributeName, AttributeType: "N" },
       ],
