@@ -369,7 +369,7 @@ export class GeoDataManager {
         return distance <= radiusInMeter;
     }).sort((a, b) => {
       return Number(a['distance'].N) - Number(b['distance'].N);
-    }).slice(0, 200);
+    }).slice(0, geoQueryInput.Limit);
 
   }
 

@@ -9,7 +9,8 @@ return geoDataManager.queryRadius({
   CenterPoint: {
       latitude: 51.511,
       longitude: -0.13
-  }
+  },
+  Limit: 10
 })
 .then((locations) => {
   console.log('Locations found: ', locations.length)
