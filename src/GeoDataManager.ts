@@ -362,13 +362,13 @@ export class GeoDataManager {
 
       const latLng: S2LatLng = S2LatLng.fromDegrees(latitude, longitude);
       item['distance'] = {N: String(centerLatLng.getEarthDistance(latLng))};
+
       return item;
     }).filter((item) => {
         let distance = Number(item['distance'].N);
         return distance <= radiusInMeter;
-      }).sort((a, b) => {
-      if (a['distance'].N < b['distance'].N) return -1
-      return a['distance'].N > b['distance'].N ? 1 : 0
+    }).sort((a, b) => {
+      return Number(a['distance'].N) - Number(b['distance'].N);
     }).slice(0, 200);
 
   }
