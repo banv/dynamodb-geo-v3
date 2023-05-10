@@ -350,16 +350,28 @@ export class GeoDataManager {
       centerPoint.longitude
     );
     radiusInMeter = geoQueryInput.RadiusInMeter;
-
-    return list.filter((item) => {
-      const geoJson: string = item[this.config.geoJsonAttributeName].S;
+    const config = this.config;
+    Object.keys(list).forEach(function (key) {
+      const geoJson: string = list[key][config.geoJsonAttributeName].S;
       const coordinates = JSON.parse(geoJson).coordinates;
-      const longitude = coordinates[this.config.longitudeFirst ? 0 : 1];
-      const latitude = coordinates[this.config.longitudeFirst ? 1 : 0];
-
+      const longitude = coordinates[config.longitudeFirst ? 0 : 1];
+      const latitude = coordinates[config.longitudeFirst ? 1 : 0];
+      
       const latLng: S2LatLng = S2LatLng.fromDegrees(latitude, longitude);
-      return centerLatLng.getEarthDistance(latLng) <= radiusInMeter;
+      list[key].distance = centerLatLng.getEarthDistance(latLng) + key;
+
     });
+    let filter = list.filter((item) => {
+      let distance = Number(item.distance);
+      return distance <= radiusInMeter;
+    });
+
+    filter.sort((a, b) => {
+      if (a.distance < b.distance) return -1
+      return a.distance > b.distance ? 1 : 0
+    })
+
+    return filter;
   }
 
   /**

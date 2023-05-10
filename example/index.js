@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.post('/post', function (req, res) {
-  if (!req.body.lat || !req.body.lng) return res.status(422).send('Missing parameters')
+  if (!req.body.lat || !req.body.lng || !req.body.userId) return res.status(422).send('Missing parameters')
 
   console.log(`Called with ${req.body}`)
   geoDataManager.queryRadius({

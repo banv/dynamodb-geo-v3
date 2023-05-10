@@ -28,6 +28,7 @@ export class GeoDataManagerConfiguration {
   rangeKeyAttributeName: string = "rangeKey";
   geohashAttributeName: string = "geohash";
   geoJsonAttributeName: string = "geoJson";
+  distanceAttributeName: string = "distance";
 
   geohashIndexName: string = "geohash-index";
 
