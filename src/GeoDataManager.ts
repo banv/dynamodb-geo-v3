@@ -353,29 +353,24 @@ export class GeoDataManager {
     // ait start change
     const config = this.config;
     // add distance to list item
-    Object.keys(list).forEach(function (key) {
-      const geoJson: string = list[key][config.geoJsonAttributeName].S;
+
+    return list.map((item) => {
+      const geoJson: string = item[config.geoJsonAttributeName].S;
       const coordinates = JSON.parse(geoJson).coordinates;
       const longitude = coordinates[config.longitudeFirst ? 0 : 1];
       const latitude = coordinates[config.longitudeFirst ? 1 : 0];
       
       const latLng: S2LatLng = S2LatLng.fromDegrees(latitude, longitude);
-      list[key].distance = centerLatLng.getEarthDistance(latLng);
+      item['distance'] = {N: centerLatLng.getEarthDistance(latLng).toString()};
+      return item;
+    }).filter((item) => {
+        let distance = Number(item['distance'].N);
+        return distance <= radiusInMeter;
+      }).sort((a, b) => {
+      if (a['distance'].N < b['distance'].N) return -1
+      return a['distance'].N > b['distance'].N ? 1 : 0
+    }).slice(0, 200);
 
-    });
-    // filter item in list by distance 
-    let filter = list.filter((item) => {
-      let distance = Number(item.distance);
-      return distance <= radiusInMeter;
-    });
-    // sort list by distance ASC 
-    filter.sort((a, b) => {
-      if (a.distance < b.distance) return -1
-      return a.distance > b.distance ? 1 : 0
-    })
-    // return limit 200 item 
-    return filter.slice(0, 200);
-    // ait end change
   }
 
   /**
