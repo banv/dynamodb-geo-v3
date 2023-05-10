@@ -2,10 +2,6 @@
   "dependencies": {
     "@ait/dynamodb-geo": "file:..",
     "@aws-sdk/client-dynamodb": "^3.319.0",
-    "uuid": "^9.0.0",
-    "serverless-http": "^1.9.1",
-    "body-parser": "^1.18.3",
-    "cors": "^2.8.5",
-    "express": "^4.16.4"
+    "uuid": "^9.0.0"
   }
 }
