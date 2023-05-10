@@ -360,7 +360,7 @@ export class GeoDataManager {
       const latitude = coordinates[config.longitudeFirst ? 1 : 0];
       
       const latLng: S2LatLng = S2LatLng.fromDegrees(latitude, longitude);
-      list[key].distance = centerLatLng.getEarthDistance(latLng) + key;
+      list[key].distance = centerLatLng.getEarthDistance(latLng);
 
     });
     // filter item in list by distance 
