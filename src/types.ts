@@ -28,6 +28,7 @@ export interface GeoPoint {
 }
 export interface GeoQueryInput {
   QueryInput?: QueryInput;
+  Limit?: number;
 }
 export interface GeoQueryOutput extends QueryOutput {}
 export interface GetPointInput {
