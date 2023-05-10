@@ -371,7 +371,7 @@ export class GeoDataManager {
       return a.distance > b.distance ? 1 : 0
     })
 
-    return filter;
+    return filter.slice(0, 200);
   }
 
   /**
