@@ -351,17 +351,17 @@ export class GeoDataManager {
     );
     radiusInMeter = geoQueryInput.RadiusInMeter;
     // ait start change
-    const config = this.config;
+
     // add distance to list item
 
     return list.map((item) => {
-      const geoJson: string = item[config.geoJsonAttributeName].S;
+      const geoJson: string = item[this.config.geoJsonAttributeName].S;
       const coordinates = JSON.parse(geoJson).coordinates;
-      const longitude = coordinates[config.longitudeFirst ? 0 : 1];
-      const latitude = coordinates[config.longitudeFirst ? 1 : 0];
-      
+      const longitude = coordinates[this.config.longitudeFirst ? 0 : 1];
+      const latitude = coordinates[this.config.longitudeFirst ? 1 : 0];
+
       const latLng: S2LatLng = S2LatLng.fromDegrees(latitude, longitude);
-      item['distance'] = {N: centerLatLng.getEarthDistance(latLng).toString()};
+      item['distance'] = {N: String(centerLatLng.getEarthDistance(latLng))};
       return item;
     }).filter((item) => {
         let distance = Number(item['distance'].N);
