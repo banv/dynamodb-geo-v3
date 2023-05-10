@@ -10,8 +10,8 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "renet/dynamodb-geo-v3",
-  "author": "René Schubert <reneschubert@gmx.de>",
+  "repository": "banv/dynamodb-geo-v3",
+  "author": "AI&T",
   "license": "Apache-2.0",
   "dependencies": {
     "@types/long": ">=3",
