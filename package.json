@@ -1,5 +1,5 @@
 {
-  "name": "@ait/dynamodb-geo",
+  "name": "@ai-t/dynamodb-geo",
   "version": "1.0.0",
   "description": "A javascript port of awslabs/dynamodb-geo, for dynamodb geospatial querying",
   "scripts": {
@@ -10,7 +10,10 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "banv/dynamodb-geo-v3",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/banv/dynamodb-geo-v3.git"
+  },
   "author": "AI&T",
   "license": "Apache-2.0",
   "dependencies": {
@@ -27,5 +30,13 @@
   },
   "peerDependencies": {
     "@aws-sdk/client-dynamodb": "^3.34.0"
+  },
+  "bugs": {
+    "url": "https://github.com/banv/dynamodb-geo-v3/issues"
+  },
+  "homepage": "https://github.com/banv/dynamodb-geo-v3#readme",
+  "directories": {
+    "example": "example",
+    "test": "test"
   }
 }
