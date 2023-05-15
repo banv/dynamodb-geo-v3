@@ -153,9 +153,7 @@ export class DynamoDBManager {
       N: parentHashKey.toString(10),
     };
     const result = await this.config.dynamoDBClient.putItem(putItemInput);
-    if(result['$metadata'].httpStatusCode == 200) {
-      return putItemInput.Item;
-    }
+    result['item'] = putItemInput.Item;
     return result;
   }
 
