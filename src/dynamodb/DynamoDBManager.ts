@@ -117,7 +117,7 @@ export class DynamoDBManager {
     return this.config.dynamoDBClient.getItem(getItemInput);
   }
 
-  public putPoint(putPointInput: PutPointInput) {
+  public async putPoint(putPointInput: PutPointInput) {
     const geohash = S2Manager.generateGeohash(putPointInput.GeoPoint);
     const hashKey = S2Manager.generateHashKey(
       geohash,
@@ -145,8 +145,18 @@ export class DynamoDBManager {
           : [putPointInput.GeoPoint.latitude, putPointInput.GeoPoint.longitude],
       }),
     };
-
-    return this.config.dynamoDBClient.putItem(putItemInput);
+    const parentHashKey = S2Manager.generateHashKey(
+      geohash,
+      this.config.parentHashKeyLength
+    );
+    putItemInput.Item[this.config.parentHashAttributeName] = {
+      N: parentHashKey.toString(10),
+    };
+    const result = await this.config.dynamoDBClient.putItem(putItemInput);
+    if(result['$metadata'].httpStatusCode == 200) {
+      return putItemInput.Item;
+    }
+    return result;
   }
 
   public batchWritePoints(putPointInputs: PutPointInput[]) {

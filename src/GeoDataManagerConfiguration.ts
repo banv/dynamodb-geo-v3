@@ -28,10 +28,13 @@ export class GeoDataManagerConfiguration {
   rangeKeyAttributeName: string = "rangeKey";
   geohashAttributeName: string = "geohash";
   geoJsonAttributeName: string = "geoJson";
+  parentHashAttributeName: string = "parentHash";
 
   geohashIndexName: string = "geohash-index";
 
   hashKeyLength: number = 2;
+  parentHashKeyLength: number = 8;
+  
 
   /**
    * The order of the GeoJSON coordinate pair in data.
