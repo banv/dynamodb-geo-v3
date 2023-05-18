@@ -27,7 +27,7 @@ import { GeoDataManagerConfiguration } from "../GeoDataManagerConfiguration";
 import {
   DeletePointInput,
   GetPointInput,
-  Item,
+  Item, ParentCell,
   PutPointInput,
   UpdatePointInput,
 } from "../types";
@@ -123,6 +123,11 @@ export class DynamoDBManager {
       geohash,
       this.config.hashKeyLength
     );
+    let parentCell: ParentCell;
+    if (this.config.parentLevel > 0) {
+      parentCell = S2Manager.getParentCell(putPointInput.GeoPoint, this.config.parentLevel);
+    }
+
     const putItemInput: PutItemInput = {
       ...putPointInput.PutItemInput,
       TableName: this.config.tableName,
@@ -145,13 +150,21 @@ export class DynamoDBManager {
           : [putPointInput.GeoPoint.latitude, putPointInput.GeoPoint.longitude],
       }),
     };
-    const parentHashKey = S2Manager.generateHashKey(
-      geohash,
-      this.config.parentHashKeyLength
-    );
-    putItemInput.Item[this.config.parentHashAttributeName] = {
-      N: parentHashKey.toString(10),
-    };
+
+    if (parentCell) {
+      putItemInput.Item[this.config.parentHashAttributeName] = {
+        N: parentCell.Id.toString(10),
+      };
+      putItemInput.Item[this.config.parentGeoJsonAttributeName] = {
+        S: JSON.stringify({
+          type: this.config.geoJsonPointType,
+          coordinates: this.config.longitudeFirst
+            ? [parentCell.GeoPoint.longitude, parentCell.GeoPoint.latitude]
+            : [parentCell.GeoPoint.latitude, parentCell.GeoPoint.longitude],
+        }),
+      }
+    }
+
     const result = await this.config.dynamoDBClient.putItem(putItemInput);
     result['item'] = putItemInput.Item;
     return result;
@@ -165,6 +178,11 @@ export class DynamoDBManager {
         geohash,
         this.config.hashKeyLength
       );
+      let parentCell: ParentCell;
+      if (this.config.parentLevel > 0) {
+        parentCell = S2Manager.getParentCell(putPointInput.GeoPoint, this.config.parentLevel);
+      }
+
       const putItemInput = putPointInput.PutItemInput;
 
       const putRequest: PutRequest = {
@@ -193,6 +211,20 @@ export class DynamoDBManager {
               ],
         }),
       };
+
+      if (parentCell) {
+        putRequest.Item[this.config.parentHashAttributeName] = {
+          N: parentCell.Id.toString(10),
+        };
+        putRequest.Item[this.config.parentGeoJsonAttributeName] = {
+          S: JSON.stringify({
+            type: this.config.geoJsonPointType,
+            coordinates: this.config.longitudeFirst
+              ? [parentCell.GeoPoint.longitude, parentCell.GeoPoint.latitude]
+              : [parentCell.GeoPoint.latitude, parentCell.GeoPoint.longitude],
+          }),
+        }
+      }
 
       writeInputs.push({ PutRequest: putRequest });
     });
