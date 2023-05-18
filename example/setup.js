@@ -1,6 +1,6 @@
 const {
   GeoTableUtil,
-} = require("@ait/dynamodb-geo");
+} = require("@ai-t/dynamodb-geo");
 
 const uuid = require("uuid");
 
@@ -18,10 +18,10 @@ console.log("Creating table with schema:");
 console.dir(createTableInput, { depth: null });
 
 // Create the table
-// ddb.createTable(createTableInput);
+// ddb.createTable(createTableInput).then(() => {console.log('table created'); process.exit(0)});
 
 // Delete the table
-// ddb.deleteTable({ TableName: config.tableName })
+// ddb.deleteTable({ TableName: config.tableName }).then(() => {console.log('table deleted'); process.exit(0)});
 console.log("Loading sample data from capitals.json");
     const data = require("./capitals.json");
     const putPointInputs = data.map(function (capital) {
