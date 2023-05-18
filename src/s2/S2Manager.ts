@@ -14,7 +14,7 @@
  */
 
 import { S2Cell, S2LatLng } from "nodes2ts";
-import { GeoPoint } from "../types";
+import {GeoPoint, ParentCell} from "../types";
 import * as Long from "long";
 
 export class S2Manager {
@@ -34,5 +34,14 @@ export class S2Manager {
     const geohashString = geohash.toString(10);
     const denominator = Math.pow(10, geohashString.length - hashKeyLength);
     return geohash.divide(denominator);
+  }
+
+  // get parent cell of point at specified level
+  public static getParentCell(geoPoint: GeoPoint, level: number): ParentCell {
+    const latLng = S2LatLng.fromDegrees(geoPoint.latitude, geoPoint.longitude);
+    const cell = S2Cell.fromLatLng(latLng);
+    const parentCell = cell.id.parentL(level);
+    const parentLatLng = parentCell.toLatLng();
+    return {Id: parentCell.id, GeoPoint: {latitude: parentLatLng.latDegrees, longitude: parentLatLng.lngDegrees}};
   }
 }

@@ -28,13 +28,34 @@ export class GeoDataManagerConfiguration {
   rangeKeyAttributeName: string = "rangeKey";
   geohashAttributeName: string = "geohash";
   geoJsonAttributeName: string = "geoJson";
-  parentHashAttributeName: string = "parentHash";
+
 
   geohashIndexName: string = "geohash-index";
 
   hashKeyLength: number = 2;
-  parentHashKeyLength: number = 8;
-  
+
+  /**
+   * The level of parent S2 Cell. This is a value between 1 and 30.
+   * If value is 0, disable generate parent cell functionality.
+   * @type {number}
+   * @default 0
+   * @see https://s2geometry.io/resources/s2cell_statistics
+   */
+  parentLevel: number = 0;
+
+  /**
+   * The name of the attribute to store the parent hash in.
+   * @type {string}
+   */
+  parentHashAttributeName: string = "parentHash";
+
+  /**
+   * The name of the attribute to store the parent GeoJSON in.
+   * This is coordinates of center of the parent S2 Cell.
+   * @type {string}
+   */
+  parentGeoJsonAttributeName: string = "parentGeoJson";
+
 
   /**
    * The order of the GeoJSON coordinate pair in data.

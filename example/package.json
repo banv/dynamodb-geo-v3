@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@ait/dynamodb-geo": "file:..",
+    "@ai-t/dynamodb-geo": "file:..",
     "@aws-sdk/client-dynamodb": "^3.319.0",
     "uuid": "^9.0.0"
   }
