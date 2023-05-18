@@ -26,6 +26,11 @@ export interface GeoPoint {
   latitude: number;
   longitude: number;
 }
+
+export interface ParentCell {
+  Id: Long;
+  GeoPoint: GeoPoint;
+}
 export interface GeoQueryInput {
   QueryInput?: QueryInput;
   Limit?: number;

@@ -42,6 +42,7 @@ describe("Example", function () {
     this.timeout(20000);
     config.hashKeyLength = 3;
     config.consistentRead = true;
+    config.parentLevel = 17;
 
     // Use GeoTableUtil to help construct a CreateTableInput.
     const createTableInput = ddbGeo.GeoTableUtil.getCreateTableRequest(config);
@@ -55,7 +56,7 @@ describe("Example", function () {
     // Load sample data in batches
 
     console.log("Loading sample data from capitals.json");
-    const data: Capital[] = require("../../example/capitals.json");
+    const data: Capital[] = require("./capitals.json");
     const putPointInputs = data.map((capital, i) => ({
       RangeKeyValue: { S: String(i) }, // Use this to ensure uniqueness of the hash/range pairs.
       GeoPoint: {
@@ -114,6 +115,9 @@ describe("Example", function () {
       },
     });
 
+    console.log('result', result);
+
+
     expect(result).to.deep.equal([
       {
         rangeKey: { S: "50" },
@@ -122,6 +126,12 @@ describe("Example", function () {
         hashKey: { N: "522" },
         geoJson: { S: '{"type":"Point","coordinates":[-0.13,51.51]}' },
         geohash: { N: "5221366118452580119" },
+        distance: { N: "81816.50009025329" },
+        parentHash: { N: '5221366118442074112' },
+        parentGeoJson: {
+          S: '{"type":"Point","coordinates":[-0.13028320135503882,51.51000781675613]}'
+        },
+
       },
     ]);
   });
